@@ -1,16 +1,16 @@
 version: '3'
 services:
   elastic:
-    image: elasticsearch:6.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     ports: 
       - "9200:9200" # rest api
       - "9300:9300" # node comm
     environment:
       - discovery.type=single-node
   kibana:
-    image: kibana:6.6.2
+    image: docker.elastic.co/kibana/kibana:7.1.1
     ports:
-      - "5601:5601" # web ui
+      - "5601:5601"
     depends_on:
       - elastic
     environment:
