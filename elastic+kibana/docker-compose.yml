@@ -1,17 +1,26 @@
 version: '3'
 services:
-  elastic:
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
     ports: 
-      - "9200:9200" # rest api
-      - "9300:9300" # node comm
+      - "9200:9200"
+      - "9300:9300"
     environment:
       - discovery.type=single-node
+      
   kibana:
     image: docker.elastic.co/kibana/kibana:7.1.1
     ports:
       - "5601:5601"
     depends_on:
-      - elastic
+      - elasticsearch
     environment:
-      - ELASTICSEARCH_URL=http://172.17.0.1:9200 # might be other ip for other hosts
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      
+  heartbeat:
+    image: docker.elastic.co/beats/heartbeat:7.1.1
+    depends_on:
+      - kibana
+    environment:
+        - setup.kibana.host=kibana:5601
+        - output.elasticsearch.hosts=["elasticsearch:9200"]            
